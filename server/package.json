@@ -16,6 +16,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index"
   },
+  "engineStrict": true,
+  "engines": {
+    "node": "v14.20.1"
+  },
   "author": "Mohd Aman",
   "license": "ISC"
 }
