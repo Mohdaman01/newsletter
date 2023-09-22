@@ -19,7 +19,7 @@ function App() {
 
           (async () => {
 
-              const response = await axios.post('http://localhost:5000/get-user', {
+              const response = await axios.post('https://newsfixserver.onrender.com/get-user', {
                   loginTokken: localStorage.getItem('loginTokken')
               }, {
                   headers: {

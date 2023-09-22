@@ -81,7 +81,7 @@ function Navbar(props) {
     e.preventDefault();
     try{
 
-      const News = await axios.get('http://localhost:5000/search',{
+      const News = await axios.get('https://newsfixserver.onrender.com/search',{
         params: {
           query: tosearch
         }

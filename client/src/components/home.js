@@ -37,7 +37,7 @@ const Home = () => {
 
         try {
 
-            const News = await axios.get(`http://localhost:5000/`, {
+            const News = await axios.get(`https://newsfixserver.onrender.com/`, {
                 params: {
                     page: pageno
                 }

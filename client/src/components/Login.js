@@ -33,7 +33,7 @@ const Login = () => {
             localStorage.setItem("loginTokken", res.credential);
             setAccount(decoded);
 
-            await axios.post('http://localhost:5000/create-account',{
+            await axios.post('https://newsfixserver.onrender.com/create-account',{
                 name: decoded.name,
                 email: decoded.email,
                 picture: decoded.picture,
