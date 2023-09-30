@@ -39,7 +39,7 @@ const Home = () => {
 
         try {
             // https://newsfixserver.onrender.com/
-            const News = await axios.get(`http://localhost:5000/`, {
+            const News = await axios.get(`${process.env.REACT_APP_Host}`, {
                 params: {
                     page: pageno
                 }

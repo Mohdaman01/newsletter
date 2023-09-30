@@ -41,7 +41,7 @@ const Login = (props) => {
 
             if (localStorage.getItem('loginTokken') === null) {
                 // https://newsfixserver.onrender.com/
-                await axios.post('http://localhost:5000/create-account', {
+                await axios.post(`$${process.env.REACT_APP_Host}create-account`, {
                     name: decoded.name,
                     email: decoded.email,
                     picture: decoded.picture,

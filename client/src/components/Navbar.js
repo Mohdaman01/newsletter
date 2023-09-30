@@ -17,7 +17,6 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material';
 import axios from 'axios';
-import Login from './Login';
 
 
 const settings = ['Logout'];
@@ -83,7 +82,7 @@ function Navbar(props) {
     e.preventDefault();
     try {
         // https://newsfixserver.onrender.com/
-      const News = await axios.get('http://localhost:5000/search', {
+      const News = await axios.get(`${process.env.REACT_APP_Host}search`, {
         params: {
           query: tosearch
         }
