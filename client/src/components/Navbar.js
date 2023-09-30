@@ -15,7 +15,9 @@ import { AccountContext } from '../context/AccountProvider';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { Button } from '@mui/material';
 import axios from 'axios';
+import Login from './Login';
 
 
 const settings = ['Logout'];
@@ -63,36 +65,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Navbar(props) {
- 
-  const {account, setAccount} = useContext(AccountContext);
+
+  const { account, setAccount } = useContext(AccountContext);
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const [tosearch, setToSearch] = React.useState('');
 
-  const setSearchNews = props.setSearchNews;
-  
+  const {setSearchNews, setRenderLogin } = props;
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  
-  const handleSearch = async (e) =>{
-    e.preventDefault();
-    try{
 
-      const News = await axios.get('https://newsfixserver.onrender.com/search',{
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+        // https://newsfixserver.onrender.com/
+      const News = await axios.get('http://localhost:5000/search', {
         params: {
           query: tosearch
         }
       });
-      
+
       setSearchNews(News.data.data.articles);
       setToSearch("");
       return;
 
 
-    }catch(err){
+    } catch (err) {
       console.log(err);
       return;
     }
@@ -104,18 +106,22 @@ function Navbar(props) {
   };
 
 
-  const handleLogOut = () =>{
+  const handleLogOut = () => {
     setAnchorElUser(null);
-    
+
     localStorage.removeItem('loginTokken');
     setAccount(null);
     return;
   }
 
-  if(account === null){
-    return;
+  const handleLogin = () => {
+     return setRenderLogin(true);
   }
- 
+
+  // if (account === null) {
+  //   return;
+  // }
+
   return (
     <AppBar position="static" style={{
       "position": "fixed"
@@ -128,7 +134,7 @@ function Navbar(props) {
             noWrap
             component="a"
             href="#"
-            onClick={()=>setSearchNews([])}
+            onClick={() => setSearchNews([])}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -148,7 +154,7 @@ function Navbar(props) {
             noWrap
             component="a"
             href="#"
-            onClick={()=>setSearchNews([])}
+            onClick={() => setSearchNews([])}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -162,8 +168,8 @@ function Navbar(props) {
           >
             NewsFix
           </Typography>
-           
-          <Search onSubmit={e => handleSearch(e)} style={{marginLeft:"auto"}}>
+
+          <Search onSubmit={e => handleSearch(e)} style={{ marginLeft: "auto" }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -171,16 +177,24 @@ function Navbar(props) {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
               value={tosearch}
-              onChange={(e)=>setToSearch(e.target.value)}
+              onChange={(e) => setToSearch(e.target.value)}
             />
           </Search>
 
-          <Box sx={{ flexGrow: 0, marginLeft: '1rem'}}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={account.picture} />
-              </IconButton>
-            </Tooltip>
+          <Box sx={{ flexGrow: 0, marginLeft: '1rem' }}>
+
+            {localStorage.getItem('loginTokken') == null ?
+
+              <Button variant='contained' onClick={()=>handleLogin()} >Login</Button> :
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src={account.picture} />
+                </IconButton>
+              </Tooltip>
+
+            }
+
+
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

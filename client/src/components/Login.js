@@ -6,11 +6,11 @@ import axios from "axios";
 
 const loginContainer = {
     "position": "absolute",
-    "display" : "flex",
-    "justify-content" : "center",
-    "align-items" : "center",
+    "display": "flex",
+    "justify-content": "center",
+    "align-items": "center",
     "background-color": "grey",
-    "top" : "25%",
+    "top": "25%",
     "left": "25%",
     "width": "50%",
     "height": "50%",
@@ -21,40 +21,52 @@ const loginStyle = {
     // "margin" : "0 auto"
 }
 
-const Login = () => {
+const Login = (props) => {
 
     const { setAccount } = useContext(AccountContext);
+    const { setRenderLogin } = props;
 
     const successHandler = async (res) => {
         try {
 
             const decoded = jwtDecode(res.credential);
-            // console.log(decoded);
-            localStorage.setItem("loginTokken", res.credential);
-            setAccount(decoded);
-
-            await axios.post('https://newsfixserver.onrender.com/create-account',{
+            const newAccount = {
                 name: decoded.name,
                 email: decoded.email,
-                picture: decoded.picture,
-                loginTokken : res.credential
-            }, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+                picture: decoded.picture
+            }
+            setAccount(newAccount);
+
+            localStorage.setItem("loginTokken", res.credential);
+
+            if (localStorage.getItem('loginTokken') === null) {
+                // https://newsfixserver.onrender.com/
+                await axios.post('http://localhost:5000/create-account', {
+                    name: decoded.name,
+                    email: decoded.email,
+                    picture: decoded.picture,
+                    loginTokken: res.credential
+                }, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+            }
+
+            setRenderLogin(false);
 
             // console.log(resposnce);
 
-            return ;
+            return;
 
         } catch (err) {
-    
+
             console.log(err);
             return;
 
         }
-        
+
     }
 
     const errorHandler = (err) => {
@@ -63,9 +75,9 @@ const Login = () => {
 
 
     return (
-        <>  
-            
-            <h1 style={{"text-align": "center", "margin": "2rem 0"}} >Sign in with Google</h1>
+        <>
+
+            <h1 style={{ "text-align": "center", "margin": "2rem 0" }} >Sign in with Google</h1>
             <div style={loginContainer} >
 
                 <GoogleLogin onSuccess={successHandler} onError={errorHandler} style={loginStyle} />

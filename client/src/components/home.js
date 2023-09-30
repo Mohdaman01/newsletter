@@ -26,6 +26,8 @@ const Home = () => {
 
     const [searchNews, setSearchNews] = useState([]);
 
+    const [renderLogin, setRenderLogin] = useState(false);
+
 
     useEffect(() => {
 
@@ -36,8 +38,8 @@ const Home = () => {
     const fetchData = async () => {
 
         try {
-
-            const News = await axios.get(`https://newsfixserver.onrender.com/`, {
+            // https://newsfixserver.onrender.com/
+            const News = await axios.get(`http://localhost:5000/`, {
                 params: {
                     page: pageno
                 }
@@ -56,57 +58,64 @@ const Home = () => {
 
     }
 
-
+    
     return (
+
         <div>
+            {renderLogin ? <Login setRenderLogin={setRenderLogin} />: 
+            <>
+            <Navbar setRenderLogin={setRenderLogin} searchNews={searchNews} setSearchNews={setSearchNews} />
+            <div >
+                <InfiniteScroll
+                    style={homeStyle}
+                    dataLength={homeNews.length}
+                    next={fetchData}
+                    hasMore={fetch} // Replace with a condition based on your data source
+                    loader={<p>Loading...</p>}
+                    endMessage={<p>No more data to load.</p>}
+                    scrollableTarget='scrollableDiv'
+                >
+                    {searchNews.length !== 0 &&
+                        searchNews.map((news) => (
+                            <NewsCard news={news} key={nanoid()} />
+                        ))
+                    }
+
+                    {
+                        homeNews.length !== 0
+                            ?
+                            homeNews.map((news) => (
+
+                                <NewsCard news={news} key={nanoid()} />
+
+                            ))
+                            :
+                            <h3 style={{paddingTop: '4rem'}}>
+                                Fetching Latest HeadLines!!
+                            </h3>
+                    }
+
+                </InfiniteScroll>
+            </div>
+            </>
+    }
+        </div>
+
+    )
+}
+
+export default Home;
+
+{/* <div>
             { 
             localStorage.getItem('loginTokken') !== null ?
 
-                    <div>
-                        <Navbar searchNews={searchNews} setSearchNews={setSearchNews} />
-                        <div >
-                            <InfiniteScroll
-                                style={homeStyle}
-                                dataLength={homeNews.length}
-                                next={fetchData}
-                                hasMore={fetch} // Replace with a condition based on your data source
-                                loader={<p>Loading...</p>}
-                                endMessage={<p>No more data to load.</p>}
-                                scrollableTarget='scrollableDiv'
-                            >
-                                {searchNews.length !== 0 && 
-                                    searchNews.map((news)=>(
-                                        <NewsCard news={news} key={nanoid()} />
-                                    ))
-                                }
 
-                                {
-                                    homeNews.length !== 0
-                                        ?
-                                        homeNews.map((news) => (
-
-                                            <NewsCard news={news} key={nanoid()} />
-
-                                        ))
-                                        :
-                                        <h3>
-                                            Server is down please wait!
-                                        </h3>
-                                }
-
-                            </InfiniteScroll>
-                        </div>
-                    </div>
-
-                    :
+:
 
                     <Login />
             }
 
 
-        </div>
-    )
-}
-
-export default Home;
+        </div>  */}
 
