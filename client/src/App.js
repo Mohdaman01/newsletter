@@ -11,15 +11,18 @@ function App() {
 
   useEffect(() => {
 
-    const abortController = new AbortController;
+    // const abortController = new AbortController;
 
     (async () => {
 
       try {
 
+        const accountArray = Object.keys(account);
 
-        if (localStorage.getItem('loginTokken') !== null && account === null) {
-          const decoded = jwtDecode(JSON.parse(localStorage.getItem('loginTokken')));
+        if (localStorage.getItem('loginTokken') !== null && accountArray.length === 0) {
+          console.log(localStorage.getItem('loginTokken'))
+          const decoded = jwtDecode(localStorage.getItem('loginTokken'));
+           
           const newAccount = {
                 name: decoded.name,
                 email: decoded.email,
@@ -44,17 +47,18 @@ function App() {
 
       } catch (err) {
 
-        if(err.name !== "CanceledError"){
+        // if(err.name !== "CanceledError"){
             
-          console.log("fetch failed"); 
+        //   console.log("fetch failed"); 
         
-        }
+        // }
+        console.log(err);
 
       }
 
     })();
 
-    return ()=> abortController.abort();
+    // return ()=> abortController.abort();
 
   }, [])
 

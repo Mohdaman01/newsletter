@@ -1,5 +1,5 @@
 const NewsApi = require('newsapi');
-const newsapi = new NewsApi(process.env.newsApiKey);
+const newsapi = new NewsApi(process.env.newsAPIkey);
 
 module.exports.home = async(req,res) =>{
 
@@ -7,7 +7,7 @@ module.exports.home = async(req,res) =>{
  
     try{ 
         
-        const data  = await newsapi.v2.topHeadlines({
+        const data  = await newsapi.v2.topHeadlines({ 
             language: 'en',
             page: pageno
             
