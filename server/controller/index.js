@@ -1,5 +1,4 @@
 const NewsApi = require('newsapi');
-console.log(process.env.NEWS_API_KEY);
 const newsapi = new NewsApi(process.env.NEWS_API_KEY);
 
 module.exports.home = async(req,res) =>{
