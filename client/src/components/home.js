@@ -13,7 +13,7 @@ const homeStyle = {
     "flex-direction": "column",
     "align-items": "center",
     "padding-top": "4.2rem",
-}
+} 
 
 
 const Home = () => {
