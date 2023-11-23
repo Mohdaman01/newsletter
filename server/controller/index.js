@@ -4,11 +4,17 @@ const newsapi = new NewsApi(process.env.newsAPIkey);
 module.exports.home = async(req,res) =>{
 
     const pageno = req.query.page; 
- 
+    const country = req.query.country;
+    const category = req.query.category;
+    console.log('fired');
+    console.log(country);
+    console.log(category); 
     try{ 
         
         const data  = await newsapi.v2.topHeadlines({ 
-            language: 'en',
+            country: country,
+            category,
+            language: country === "" ? "en" : "",
             page: pageno
             
         });

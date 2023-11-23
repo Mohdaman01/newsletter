@@ -2,7 +2,9 @@ import { GoogleLogin } from "@react-oauth/google"
 import jwtDecode from "jwt-decode";
 import { AccountContext } from "../context/AccountProvider";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { HomeNewsContext } from "../context/NewsProvider";
 
 const loginContainer = {
     "position": "absolute",
@@ -24,7 +26,8 @@ const loginStyle = {
 const Login = (props) => {
 
     const { setAccount } = useContext(AccountContext);
-    const { setRenderLogin } = props;
+    const { setHomeNews,setPageno } = useContext(HomeNewsContext);
+    const navigation = useNavigate();
 
     const successHandler = async (res) => {
         try {
@@ -53,10 +56,10 @@ const Login = (props) => {
                 });
 
             }
-
-            setRenderLogin(false);
-
-            // console.log(resposnce);
+            
+            setHomeNews([]);
+            setPageno(1);
+            navigation('/');
 
             return;
 

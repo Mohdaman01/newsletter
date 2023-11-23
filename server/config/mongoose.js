@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 //making connection to local database
-mongoose.connect(`mongodb+srv://mohdastar200026:${process.env.mongoPass}@cluster0.cp66cca.mongodb.net/NewsApp`);
+mongoose.connect(process.env.MONGO_URL);
 
 //Setting database to db
 const db = mongoose.connection;

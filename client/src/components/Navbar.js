@@ -16,7 +16,9 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material';
-import axios from 'axios';
+import BasicModal from './Model';
+import { Link } from 'react-router-dom';
+import { HomeNewsContext } from '../context/NewsProvider';
 
 
 const settings = ['Logout'];
@@ -67,11 +69,12 @@ function Navbar(props) {
 
   const { account, setAccount } = useContext(AccountContext);
 
+  const { setHomeNews, searchNewsData, setSearchNews, fetchData, setPageno } = useContext(HomeNewsContext);
+
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const [tosearch, setToSearch] = React.useState('');
 
-  const {setSearchNews, setRenderLogin } = props;
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -80,23 +83,8 @@ function Navbar(props) {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    try {
-        // https://newsfixserver.onrender.com/
-      const News = await axios.get(`${process.env.REACT_APP_Host}search`, {
-        params: {
-          query: tosearch
-        }
-      });
 
-      setSearchNews(News.data.data.articles);
-      setToSearch("");
-      return;
-
-
-    } catch (err) {
-      console.log(err);
-      return;
-    }
+    await searchNewsData(tosearch);
 
   }
 
@@ -113,13 +101,6 @@ function Navbar(props) {
     return;
   }
 
-  const handleLogin = () => {
-     return setRenderLogin(true);
-  }
-
-  // if (account === null) {
-  //   return;
-  // }
 
   return (
     <AppBar position="static" style={{
@@ -127,16 +108,21 @@ function Navbar(props) {
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <NewspaperIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <NewspaperIcon sx={{ display: { md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
             href="#"
-            onClick={() => setSearchNews([])}
+            onClick={() => {
+              setSearchNews([]);
+              setPageno(1);
+              setHomeNews([]);
+              fetchData();
+            }}
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
+              display: { md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
@@ -147,75 +133,61 @@ function Navbar(props) {
             NewsFix
           </Typography>
 
-          <NewspaperIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#"
-            onClick={() => setSearchNews([])}
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            NewsFix
-          </Typography>
-
-          <Search onSubmit={e => handleSearch(e)} style={{ marginLeft: "auto" }}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              value={tosearch}
-              onChange={(e) => setToSearch(e.target.value)}
-            />
-          </Search>
-
-          <Box sx={{ flexGrow: 0, marginLeft: '1rem' }}>
-
-            {localStorage.getItem('loginTokken') == null ?
-
-              <Button variant='contained' onClick={()=>handleLogin()} >Login</Button> :
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={account.picture} />
-                </IconButton>
-              </Tooltip>
-
-            }
 
 
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleLogOut}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+
+
+          <Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
+
+            {localStorage.getItem('loginTokken') === null ?
+
+              <Button variant='contained' ><Link to='/login' style={{textDecoration: 'none', color: 'white'}} >Login</Link></Button>
+              :
+              <Box style={{display: 'flex'}}>
+                <Search onSubmit={e => handleSearch(e)} style={{ marginLeft: "auto" }}>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={tosearch}
+                    onChange={(e) => setToSearch(e.target.value)}
+                  />
+                </Search>
+                <div style={{ display: 'flex' }}>
+                  <BasicModal />
+                  <Tooltip title="Open settings" style={{ marginLeft: '2rem' }} >
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt="Remy Sharp" src={account.picture} />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+
+
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleLogOut}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>}
           </Box>
         </Toolbar>
       </Container>
