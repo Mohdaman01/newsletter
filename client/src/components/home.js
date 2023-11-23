@@ -1,5 +1,4 @@
-import NewsCard from "./newsCard";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect} from "react";
 import { HomeNewsContext } from "../context/NewsProvider";
 import Navbar from "./Navbar";
 import { nanoid } from "nanoid";
@@ -25,7 +24,7 @@ const Home = () => {
 
     useEffect(() => {
 
-        fetchData(); 
+        // fetchData(); 
 
     }, [])
 

@@ -35,7 +35,7 @@ const NewsProvider = ({ children }) => {
 
     const searchNewsData = async (tosearch) => {
         try {
-            // https://newsfixserver.onrender.com/
+             
             const News = await axios.get(`${process.env.REACT_APP_Host}search`, {
                 params: {
                     query: tosearch
