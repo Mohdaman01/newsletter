@@ -12,10 +12,10 @@ module.exports.home = async(req,res) =>{
     try{ 
         
         const data  = await newsapi.v2.topHeadlines({ 
-            country: country,
-            category,
+            country: country || "",
+            category: category || "",
             language: country === "" ? "en" : "",
-            page: pageno
+            page: pageno || 1
             
         });
    

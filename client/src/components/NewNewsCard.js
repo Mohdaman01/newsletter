@@ -9,7 +9,6 @@ import { Link } from '@mui/material';
 import imgPlaceholder from '../assets/5204684_2665818.svg';
 
 export default function NewNewsCard({ news }) {
-    console.log(news)
     return (
         <Card sx={{ maxWidth: 800, margin: '2rem' }}>
             <CardMedia
