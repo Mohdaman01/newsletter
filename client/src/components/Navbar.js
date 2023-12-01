@@ -20,9 +20,6 @@ import BasicModal from './Model';
 import { Link } from 'react-router-dom';
 import { HomeNewsContext } from '../context/NewsProvider';
 
-
-const settings = ['Logout'];
-
 const Search = styled('form')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -65,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Navbar(props) {
+function Navbar() {
 
   const { account, setAccount } = useContext(AccountContext);
 
@@ -83,9 +80,10 @@ function Navbar(props) {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-
-    await searchNewsData(tosearch);
-
+    if(tosearch !== ''){
+      await searchNewsData(tosearch);
+      setToSearch('');
+    }
   }
 
   const handleCloseUserMenu = () => {
@@ -133,18 +131,22 @@ function Navbar(props) {
             NewsFix
           </Typography>
 
-
-
-
-
           <Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
 
             {localStorage.getItem('loginTokken') === null ?
 
-              <Button variant='contained' ><Link to='/login' style={{textDecoration: 'none', color: 'white'}} >Login</Link></Button>
+              <Button variant='contained' ><Link to='/login' style={{ textDecoration: 'none', color: 'white' }} >Login</Link></Button>
               :
-              <Box style={{display: 'flex'}}>
-                <Search onSubmit={e => handleSearch(e)} style={{ marginLeft: "auto" }}>
+              <Box style={{ display: 'flex' }}>
+                <Search onSubmit={e => handleSearch(e)}
+                  sx={{
+                    display: {
+                      xs: 'none',
+                      sm: 'none',
+                      md: 'block'
+                    }
+                  }}
+                  style={{ marginLeft: "auto" }}>
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>
@@ -166,7 +168,7 @@ function Navbar(props) {
 
 
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={{ mt: '45px', mr: '20px' }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -181,11 +183,28 @@ function Navbar(props) {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleLogOut}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
+                  <MenuItem key="searchBar" sx={{
+                    display: {
+                      md: 'none'
+                    }
+                  }}>
+                    <Search onSubmit={e => handleSearch(e)} style={{ marginLeft: "auto"}}>
+                      <SearchIconWrapper>
+                        <SearchIcon />
+                      </SearchIconWrapper>
+                      <StyledInputBase
+                      sx={{width: '25rem'}}
+                        placeholder="Search…"
+                        inputProps={{ 'aria-label': 'search' }}
+                        value={tosearch}
+                        onChange={(e) => setToSearch(e.target.value)}
+                      />
+                    </Search>
+                  </MenuItem>
+
+                  <MenuItem key="logout" onClick={handleLogOut}>
+                    <Typography sx={{ margin: '0 auto'}} textAlign="center">Logout</Typography>
+                  </MenuItem>
                 </Menu>
               </Box>}
           </Box>
